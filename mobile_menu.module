@@ -1,0 +1,78 @@
+<?php
+
+/**
+ * @file
+ * Render the main menu responsive as a swipe left-right menu on mobile devices.
+ * Developed by Timothy A. Escopete
+ * www.timothyae.com
+ */
+
+/**
+ * Implements hook_help().
+ */
+function mobile_menu_help($path, $arg) {
+  switch ($path) {
+    case 'admin/config/user-interface/mobile_menu':
+      return '<p>' . t('The mobile menu module converts the desired menu into a responsive menu on mobile devices.  Further, the menu is swipe-left-right enabled and is using snap.js.') . '</p>';
+
+    case 'admin/help#mobile_menu':
+      $output = '';
+      $output .= '<p>' . t('This is the help section.') . '</p>';
+      return $output;
+  }
+}
+
+/**
+ * Implements hook_permission().
+ */
+function mobile_menu_permission() {
+  return array(
+    'configure mobile menu' => array(
+      'title' => t('Configure mobile menu'),
+      'description' => t('Access to the admin configuration page of Mobile Menu.'),
+    ),
+  );
+}
+
+/**
+ * Implements hook_menu().
+ */
+function mobile_menu_menu() {
+  $items['admin/config/user-interface/mobile_menu'] = array(
+    'title' => 'Mobile menu',
+    'description' => 'Configure mobile menu.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('mobile_menu_form'),
+    'access arguments' => array('administer site configuration'),
+    'file' => 'mobile_menu.inc',
+  );
+  return $items;
+}
+
+/**
+ * Implements hook_form().
+ */
+function mobile_menu_form($form, &$form_state) {
+  $form['mobile_menu_menu'] = array (
+    '#title' => 'Select the menu',
+    '#type' => 'select',
+    '#options' => array_merge(array("default" => "Select Menu"), menu_get_menus()),
+    //'#default_value' => 'default',
+    '#weight' => 1,
+  );
+  $form['submit_button'] = array(
+    '#type' => 'submit',
+    '#value' => t('Save Settings!'),
+    '#weight' => 2,
+  );
+  return $form;
+}
+
+/**
+ * Implements hook_form_validate().
+ */
+function mobile_menu_form_validate($form, &$form_state) {
+  if (!($form_state['values']['mobile_menu_menu'] != "default")){
+    form_set_error('mobile_menu_menu', t('<b>Select the menu</b> must be set.'));
+  }
+}
