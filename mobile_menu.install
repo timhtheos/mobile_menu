@@ -1,0 +1,45 @@
+<?php
+
+/**
+ * @file
+ * Install, update, and uninstall functions for the mobile menu module.
+ */
+
+/**
+ * Implements hook_schema().
+ */
+function mobile_menu_schema() {
+  $schema['cache_mobile_menu'] = drupal_get_schema_unprocessed('system', 'cache');
+  $schema['cache_mobile_menu']['description'] = 'Cache table for mobile menu module to store client-side caching hashes.';
+  return $schema;
+}
+
+/**
+ * Implements hook_install().
+ */
+function mobile_menu_install() {
+  db_update('system')
+  ->fields(array('weight' => 100))
+  ->condition('type', 'module')
+  ->condition('name', 'mobile_menu')
+  ->execute();
+}
+
+/**
+ * Implements hook_uninstall().
+ */
+function mobile_menu_uninstall() {
+  //variable_del('');
+}
+
+/**
+ * Add {cache_admin_menu} table.
+ */
+function mobile_menu_update_7300() {
+  /*
+  if (!db_table_exists('cache_admin_menu')) {
+    $schema = drupal_get_schema_unprocessed('system', 'cache');
+    db_create_table('cache_admin_menu', $schema);
+  }
+  */
+}
