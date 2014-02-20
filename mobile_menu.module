@@ -35,6 +35,14 @@ function mobile_menu_permission() {
 }
 
 /**
+ * Implements hook_init().
+ */
+function mobile_menu_init() {
+  drupal_add_js(drupal_get_path('module', 'mobile_menu') . '/snapjs/snap.js');
+  drupal_add_js(drupal_get_path('module', 'mobile_menu') . '/mobile_menu.js');
+}
+
+/**
  * Implements hook_menu().
  */
 function mobile_menu_menu() {
@@ -53,17 +61,19 @@ function mobile_menu_menu() {
  * Implements hook_form().
  */
 function mobile_menu_form($form, &$form_state) {
-  $form['mobile_menu_menu'] = array (
+  $form['mobile_menu_menu'] = array(
     '#title' => 'Select the menu',
     '#type' => 'select',
     '#options' => array_merge(array("default" => "Select Menu"), menu_get_menus()),
     //'#default_value' => 'default',
-    '#weight' => 1,
+    '#weight' => -10,
   );
+//  $form[''] = array(
+//    '#' => '',
+//  );
   $form['submit_button'] = array(
     '#type' => 'submit',
     '#value' => t('Save Settings!'),
-    '#weight' => 2,
   );
   return $form;
 }
@@ -75,4 +85,29 @@ function mobile_menu_form_validate($form, &$form_state) {
   if (!($form_state['values']['mobile_menu_menu'] != "default")){
     form_set_error('mobile_menu_menu', t('<b>Select the menu</b> must be set.'));
   }
+}
+
+//if ($path = libraries_get_path($name)) {
+  // Do something with the library, knowing the path, for instance:
+  // drupal_add_js($path . '/example.js');
+//}
+
+
+function mobile_menu_libraries_info() {
+  $libraries['snapjs'] = array(
+    'name' => 'Snap JS',
+    'vendor url' => 'http://jakiestfu.github.io/Snap.js/',
+    'download url' => 'https://github.com/jakiestfu/Snap.js/',
+    'version arguments' => array(
+      'file' => 'snap.js',
+      // Best practice: Document the actual version strings for later reference.
+      // 1.x: Version 1.0
+      'pattern' => '/Version (\d+)/',
+      'lines' => 9,
+    ),
+    'files' => array(
+      'js' => array('snap.js'),
+    ),
+  );
+  return $libraries;
 }
